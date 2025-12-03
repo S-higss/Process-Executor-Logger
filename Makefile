@@ -34,8 +34,13 @@ clean:
 .PHONY: all clean
 
 .PHONY: cmake_build cmake_rebuild
+
 cmake_build:
-	mkdir build && cd build && cmake .. && cmake --build .
+	@if not exist build mkdir build
+	@cd build && cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
+	@cmake --build build --config Release
+
 cmake_clean:
 	@if exist build rmdir /s /q build
+
 cmake_rebuild: cmake_clean cmake_build
