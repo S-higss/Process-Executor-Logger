@@ -32,3 +32,10 @@ clean:
 
 # Phony targets
 .PHONY: all clean
+
+.PHONY: cmake_build cmake_rebuild
+cmake_build:
+	mkdir build && cd build && cmake .. && cmake --build .
+cmake_clean:
+	@if exist build rmdir /s /q build
+cmake_rebuild: cmake_clean cmake_build
