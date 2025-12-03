@@ -21,14 +21,22 @@ This is a simple C++ utility designed to launch an external executable file, pas
 You can compile this program using a standard C++ compiler. If you are using g++ (MinGW/Cygwin) on Windows, the command would typically look like this:
 
 ```bash
-// Using g++ compiler
-make
-or
-// Using cmake
-make cmake_build
+g++ your_filename.cpp -o ProcessExecutorLogger.exe
 ```
 
 *(Replace `your_filename.cpp` with the name of the file containing the code.)*
+
+### Or using make
+
+```bash
+make
+```
+
+### Or using cmake
+
+```bash
+make cmake_build
+```
 
 ## 💻 How to Run
 

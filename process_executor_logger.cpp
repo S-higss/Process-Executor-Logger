@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <chrono>
 #include <Windows.h>
+#include <vector>
 
 std::string LoggingTime() {
     auto now = std::chrono::system_clock::now();
@@ -25,6 +26,10 @@ int main() {
 
     std::cout << "Please enter the path to the executable file: ";
     std::getline(std::cin, executablePath);
+    if (executablePath.find('"') != std::string::npos) {
+        std::cerr << "Error: Executable path cannot contain quote characters." << std::endl;
+        return 1;
+    }
 
     std::cout << "Please enter options (arguments), or leave blank: ";
     std::getline(std::cin, options);
@@ -33,13 +38,14 @@ int main() {
     if (!options.empty()) {
         std::cout << LoggingTime() << " With options: " << options << std::endl;
     }
-
     // Add: Enclose the path in quotes in case it contains spaces
     std::string quotedPath = "\"" + executablePath + "\"";
     std::string cmdline = quotedPath;
     if (!options.empty()) {
         cmdline += " " + options;
     }
+    std::vector<char> cmdline_buf(cmdline.begin(), cmdline.end());
+    cmdline_buf.push_back('\0');
 
     // Execute the executable file in a separate window using CreateProcess
     STARTUPINFOA si;
@@ -55,7 +61,7 @@ int main() {
     // Set the first argument of CreateProcessA to NULL to pass the executable path as a command line argument
     if (!CreateProcessA(
         NULL,   // Application name
-        (char*)cmdline.c_str(), // Command line
+        cmdline_buf.data(), // Command line
         NULL,          // Process attributes
         NULL,          // Thread attributes
         FALSE,         // Do not inherit handles
@@ -75,6 +81,8 @@ int main() {
     DWORD exitCode = 0;
     if (GetExitCodeProcess(pi.hProcess, &exitCode)) {
         std::cout << LoggingTime() << " Process exited with code: " << exitCode << std::endl;
+    } else {
+        std::cerr << LoggingTime() << " Failed to get exit code. Error code: " << GetLastError() << std::endl;
     }
 
     // Record end time and calculate elapsed time
