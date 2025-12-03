@@ -48,3 +48,6 @@ Makefile.cmake
 *.cmake
 build/
 !CMakeLists.txt
+
+# Compiled executable
+process_executor_logger
